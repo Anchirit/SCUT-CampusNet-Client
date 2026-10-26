@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.drclient.lock
+debug.log
+DrClientConfig*
+auth_log.txt
+auth_all_log.txt
+core
+core.*
+
+# Runtime account databases and update artifacts created by the original client.
+/[0-9]*
+/test_upeate_request
+*.db
+*.sqlite
+*.sqlite3
