@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=MyDrClient 校园网
+Name[zh_CN]=MyDrClient 校园网
+Comment=Wired campus network authentication client
+Comment[zh_CN]=校园网认证客户端
+Exec=/usr/bin/mydrclient
+Icon=mydrclient
+Terminal=false
+Categories=Network;
+StartupNotify=true
+StartupWMClass=mydrclient

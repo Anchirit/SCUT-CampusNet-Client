@@ -10,6 +10,32 @@
 
 ## 使用
 
+### 推荐：安装 Release 软件包
+
+从 [最新 Release](https://github.com/Anchirit/SCUT-CampusNet-Client/releases/latest) 下载 **`mydrclient_1.0.0_amd64.deb`**，适用于 Ubuntu 22.04 amd64 / x86_64 图形桌面。其他 Ubuntu 版本尚未验证，ARM 不支持。
+
+先从托盘菜单“退出程序”结束已有客户端，然后双击 `.deb`，用系统软件安装器完成安装。若桌面未关联安装器，在下载目录执行：
+
+```bash
+sudo apt install ./mydrclient_1.0.0_amd64.deb
+```
+
+安装时输入一次本机管理员密码；APT 会按需安装缺少的系统依赖，可能需要可用的网络和软件源。无需再执行 `privillege.sh`。安装后打开应用菜单，搜索 **MyDrClient 校园网**，点击图标启动；也可以右键图标，选择桌面提供的“添加到收藏夹”固定到 Dock。重启后仍可直接从图标打开。
+
+安装版把完整程序装入 `/usr/lib/mydrclient`，启动入口为 `/usr/bin/mydrclient`，图标和菜单入口位于 `/usr/share` 的标准应用目录。**安装完成后可以删除下载的 `.deb` 或原来的项目文件夹**，不影响安装版运行。不需要设置开机服务；关闭窗口留在托盘的行为与源码版一致。
+
+升级时先从托盘退出，再安装新版本 `.deb`；认证后台仍运行时，安装器会拒绝替换或卸载，避免中断连接。安装版与源码版使用同一应用身份、账号偏好和密钥环条目，切换前务必退出另一个版本；若过去执行过源码的 `privillege.sh`，旧的用户菜单入口可能仍保留，请使用本安装包的 **MyDrClient 校园网** 入口，或在终端运行 `/usr/bin/mydrclient`。安装包不会删除或改写旧源码版的安装。
+
+卸载：
+
+```bash
+sudo apt remove mydrclient
+```
+
+卸载保留用户配置和密钥环中的可选密码，不删除旧源码目录。Release 同时提供 `SHA256SUMS`，与 `.deb` 放在同一目录后可执行 `sha256sum -c SHA256SUMS` 校验下载内容。
+
+### 从源码目录运行
+
 获取完整项目：
 
 ```bash
@@ -42,7 +68,9 @@ sh privillege.sh
 
 ## 是否可以独立运行
 
-整个项目包含前端、图标、原生启动入口、认证后台原文件及安装脚本，不依赖旧 `DrClient` 目录。但它是需要一次安装的完整项目，不是免安装的单文件程序：
+**Release 安装版可以独立运行**：完成一次安装后，所有运行文件由系统软件包管理器管理，无需保留仓库目录。
+
+源码目录也包含前端、图标、原生启动入口、认证后台原文件及安装脚本，不依赖旧 `DrClient` 目录。若选择源码运行，则有以下要求：
 
 - 日常双击 `myDrClient`，同目录的 Python 代码和图标必须保留。
 - 系统依赖为 Python 3、PyGObject、GTK 4、libsecret、GdkPixbuf 和 iproute2；首次配置按需通过 Ubuntu 软件源安装缺少的依赖，因此可能需要可用的网络和软件源。
@@ -50,7 +78,7 @@ sh privillege.sh
 - 复制完整项目到另一台电脑后，需要在新电脑执行一次首次配置。系统内核还需支持随包静态链接的 32 位认证后台；已在 Ubuntu 22.04 amd64 验证。
 - 账号偏好、诊断和可选保存的密码位于本应用用户配置目录及系统密钥环，不随项目发布。
 
-首次配置会写入上述后台目录和用户应用菜单入口；日常运行不自动修改 MAC、IP、路由、内核启动参数、桌面扩展或动画设置。
+源码首次配置会写入上述后台目录和用户应用菜单入口；Release 安装版使用前述系统软件包目录。系统分区需允许 SetUID，内核需支持静态 32 位后台。两种方式都不会配置开机服务，日常运行不自动修改 MAC、IP、路由、内核启动参数、桌面扩展或动画设置。
 
 ## 功能与限制
 
@@ -87,6 +115,7 @@ sh privillege.sh
 | `protocol.py` | 与原客户端一致的本地 UDP 编解码 |
 | `storage.py` | 配置、脱敏日志和系统密钥环 |
 | `privillege.sh`、`install.py` | 首次配置及后台安装 |
+| `packaging/`、`VERSION` | Release 安装包构建、应用菜单入口与版本号 |
 | `vendor/` | 已修复的原认证后台、随包配置、辅助脚本和校验值 |
 | `tests/` | 独立测试后台与端到端验证入口 |
 
@@ -125,6 +154,24 @@ Ubuntu 22.04 / GNOME X11 上的 19 项端到端场景已通过，包含右上角
 本机另已通过正式新版界面完成一次真实校园网认证：802.1X、用户属性校验均通过，界面收到最终成功响应；随后通过有线网卡直接访问学校 HTTPS 网站得到 HTTP 200。验证时同时保留 Wi-Fi，并由本机系统网络配置为实际认证服务器指定有线出口。该结果不替代其他学校、账号或系统环境的验证。
 
 ## 构建入口
+
+在 Ubuntu 22.04 amd64 构建 Release 安装包，不需要 root：
+
+```bash
+# 构建依赖（已有时无需安装）
+sudo apt install gcc dpkg-dev desktop-file-utils
+/usr/bin/python3 packaging/build_deb.py
+```
+
+输出为 `dist/mydrclient_1.0.0_amd64.deb` 和 `dist/SHA256SUMS`。构建采用运行文件白名单，校验原后台，并将包内文件所有者设为 root；不打入账号配置、诊断、测试结果或 Git 历史。固定 `SOURCE_DATE_EPOCH` 后可重复构建相同的包。
+
+完整安装验证：
+
+```bash
+/usr/bin/python3 tests/package_install.py
+```
+
+该入口在独立用户、PID、网络和挂载命名空间中，使用私有 dpkg 数据库实际安装、启动、重装和卸载 `.deb`；验证原生入口、GTK 单实例、真实后台初始化及超时清理、在线升级/卸载保护和用户配置保留。需要当前图形桌面以及 `unshare`、`mount`、`dbus-daemon`、`gapplication`、`gdbus`；不会安装到宿主系统，不向学校发送测试账号。完整界面与托盘流程另由上面的 `tests/end_to_end.py` 验证。
 
 预编译入口适用于 Ubuntu 22.04 amd64。修改 `launcher.c` 后可重新编译：
 

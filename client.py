@@ -17,7 +17,10 @@ import time
 
 from protocol import decrypt, encrypt
 
-ENGINE = Path('/usr/local/lib/mydrclient')
+APP_ROOT = Path(__file__).resolve().parent
+PACKAGED = APP_ROOT == Path('/usr/lib/mydrclient')
+ENGINE = APP_ROOT / 'engine' if PACKAGED else Path('/usr/local/lib/mydrclient')
+INSTALL_HINT = '请重新安装 MyDrClient 安装包。' if PACKAGED else '请运行项目目录中的 privillege.sh。'
 ENGINE_HASH = 'ae8bd0b11a3606c8e85f47bf5e914a09e515c75cf83e333e8b722ee6952ef40c'
 
 
@@ -120,14 +123,14 @@ class Client:
             raise ValueError(adapter.issue())
         executable = self.directory / 'drcomauthsvr'
         if not executable.is_file():
-            raise ValueError('尚未完成首次配置，请运行同目录中的 privillege.sh。')
+            raise ValueError('认证服务尚未安装，' + INSTALL_HINT)
         if self.privileged:
             info = executable.stat()
             parent = self.directory.stat()
             if (info.st_uid != 0 or not info.st_mode & stat.S_ISUID or
                     parent.st_uid != 0 or parent.st_mode & 0o022 or
                     hashlib.sha256(executable.read_bytes()).hexdigest() != ENGINE_HASH):
-                raise ValueError('认证服务的版本或权限不正确，请重新运行 privillege.sh。')
+                raise ValueError('认证服务的版本或权限不正确，' + INSTALL_HINT)
         ports = [('127.0.0.1', self.port)]
         if self.privileged:
             ports.append(('0.0.0.0', 61440))

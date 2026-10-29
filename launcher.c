@@ -6,6 +6,15 @@
 #include <unistd.h>
 
 int main(int argc, char **argv) {
+#ifdef APP_VERSION
+    if (argc == 2 && strcmp(argv[1], "--version") == 0) {
+        puts("MyDrClient " APP_VERSION);
+        return 0;
+    }
+#endif
+#ifdef APP_INSTALL_DIR
+    const char *path = APP_INSTALL_DIR;
+#else
     char path[PATH_MAX];
     ssize_t length = readlink("/proc/self/exe", path, sizeof(path) - 1);
     if (length < 0 || length >= (ssize_t)sizeof(path) - 1) return 1;
@@ -13,6 +22,7 @@ int main(int argc, char **argv) {
     char *slash = strrchr(path, '/');
     if (!slash) return 1;
     *slash = '\0';
+#endif
     if (chdir(path) != 0) { perror("myDrClient"); return 1; }
     const char *variables[] = {"PYTHONHOME", "PYTHONPATH", "GI_TYPELIB_PATH", "GTK_PATH",
                                "LD_LIBRARY_PATH", "LD_PRELOAD", NULL};
