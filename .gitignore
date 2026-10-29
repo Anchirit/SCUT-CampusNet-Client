@@ -1,16 +1,23 @@
 __pycache__/
 *.pyc
-.drclient.lock
-debug.log
-DrClientConfig*
-auth_log.txt
-auth_all_log.txt
-core
-core.*
+test-results/
+settings.json
+*.log
 
-# Runtime account databases and update artifacts created by the original client.
+# Local credentials, account databases, captures and crash dumps.
+.env
+.env.*
+DrClientConfig*
+.drclient.lock
 /[0-9]*
-/test_upeate_request
 *.db
 *.sqlite
 *.sqlite3
+*.pcap
+*.pcapng
+*.pem
+*.key
+credentials*.json
+secrets*.json
+core
+core.*

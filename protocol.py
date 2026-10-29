@@ -1,4 +1,4 @@
-"""The original client's local UDP protocol, used only for read-only probes."""
+"""Wire-compatible local protocol for the bundled Dr.COM engine."""
 
 import struct
 
@@ -43,4 +43,8 @@ def decrypt(message):
             words[index] = (words[index] - _mix(z, y, total, index, e)) & MASK
             y = words[index]
         total = (total - DELTA) & MASK
-    return struct.pack('<%dI' % count, *words).split(b'\0', 1)[0].decode('gb18030', errors='replace')
+    plain = struct.pack('<%dI' % count, *words).split(b'\0', 1)[0]
+    try:
+        return plain.decode('utf-8')
+    except UnicodeDecodeError:
+        return plain.decode('gb18030', errors='replace')

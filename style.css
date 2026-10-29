@@ -1,0 +1,25 @@
+window { background: @theme_bg_color; }
+.content { padding: 18px 24px 16px; }
+.header-title { font-size: 13px; font-weight: 600; }
+.title { font-size: 27px; font-weight: 800; letter-spacing: -1px; }
+.muted, .footer { opacity: 0.62; font-size: 12px; }
+.brand-icon { margin: 2px 0; }
+.status-title { font-size: 15px; font-weight: 700; }
+.status-dot { color: #88939e; font-size: 13px; }
+.status-dot.connected { color: #15966b; }
+.status-dot.error { color: #c85e4f; }
+.status-dot.busy { color: #c28a32; }
+.card { background: @theme_base_color; border: 1px solid alpha(@theme_fg_color, 0.10); border-radius: 16px; padding: 14px; }
+.section-title, .field-label { font-size: 13px; font-weight: 600; }
+.network-info { font-size: 11px; opacity: 0.65; line-height: 1.6; }
+entry, passwordentry { border-radius: 10px; min-height: 36px; }
+passwordentry entry { border: none; box-shadow: none; background: transparent; }
+dropdown > button { border-radius: 10px; min-height: 33px; }
+checkbutton { margin-top: 6px; font-size: 12px; }
+.message { font-size: 12px; opacity: 0.78; min-height: 32px; }
+.connect-button { min-height: 44px; border-radius: 12px; font-size: 14px; font-weight: 700; }
+.connect-button.suggested-action { background: #138579; color: white; border-color: transparent; }
+.connect-button.suggested-action:hover { background: #0e746a; }
+.connect-button:disabled { opacity: 0.55; }
+.flat { border-radius: 8px; font-size: 12px; }
+.footer { font-size: 11px; }
